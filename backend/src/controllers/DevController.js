@@ -23,14 +23,21 @@ module.exports = {
         //get user json from github api using axios!
         const response = await axios.get(`https://api.github.com/users/${username}`)
 
-        //checking if user exists
+        //console.log(response.data);
+
+        //checking if user exists on our database
+        console.log('. Validating user ' + username);
         const userExists = await Dev.findOne({ user: username });
         if(userExists) {
+            console.log(`. . ${username} already on database...`);
+            console.log(userExists);
             return res.json(userExists);
         }
 
         //recovering infos from json
         const { name, bio, avatar_url: avatar} = response.data;
+        console.log(`. . ${username} found!`);
+        console.log([name, bio]);
 
         //insert into database
         const dev = await Dev.create({
@@ -40,6 +47,7 @@ module.exports = {
             avatar
          })
 
+         console.log('. . added to database');
         //return response from database
         return res.json(dev);
     }

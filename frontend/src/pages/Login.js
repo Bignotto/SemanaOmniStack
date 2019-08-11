@@ -2,13 +2,26 @@ import React, { useState } from 'react';
 import logo from '../assets/big_logo.svg'
 import './Login.css'
 
+import api from '../services/api'
+
 export default function Login({ history }) {
     const [username, setUsername] = useState('');
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
+        //bloqueia o redirecionamento padrão do botão enviar de redirecionar para outra página
         e.preventDefault();
-        console.log(username);
-        history.push('/main')
+
+        const response = await api.post('/devs', {
+            username,
+        });
+        
+        const { _id } = response.data;
+        
+        //console.log(username);
+
+        //history é um vetor
+        //podemos ir para a rota específica fazendo um push com a rota no vetor history
+        history.push(`/dev/${_id}`);
     }
 
     return (
