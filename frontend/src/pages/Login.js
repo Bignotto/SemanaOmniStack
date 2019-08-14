@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from '../assets/big_logo.svg'
+import logo from '../assets/logo.svg'
 import './Login.css'
 
 import api from '../services/api'
