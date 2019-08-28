@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {
   Text,
   TouchableOpacity,
@@ -10,13 +13,31 @@ import {
 } from 'react-native';
 
 import logo from '../assets/logo.png'
+import api from '../services/api'
 
 export default function Login({ navigation }) {
   const [user, setUser] = useState('');
-  function handleLogin () {
-    
-    navigation.navigate('Main');
-  }
+
+  //useEffect com segundo parâmetro vazio executa somente quando o componente
+  //for exibido na tela, uma única vez.
+  useEffect(() => {
+    AsyncStorage.getItem('user').then(user => {
+      if(user) {
+        navigation.navigate('Main', {user});
+      }
+    })
+  }, []);
+  
+    async function handleLogin () {
+      const response = await api.post('/devs',{ username: user });
+
+      const { _id } = response.data;
+
+      await AsyncStorage.setItem('user', _id);
+
+      console.log(_id);
+      navigation.navigate('Main', { user:_id });
+    }
 
     return (
         <KeyboardAvoidingView
